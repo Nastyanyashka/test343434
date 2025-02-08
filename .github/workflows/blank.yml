@@ -11,7 +11,9 @@ jobs:
         id: issue-iam-token
         uses: yc-actions/yc-iam-token@v1
         with:
-          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+          yc-key-id: ${{ secrets.YC_KEY_ID }}
+          yc-service-account-id: ${{ secrets.YC_SERVICE_ACCOUNT_ID }}
+          yc-private-key: ${{ secrets.YC_PRIVATE_KEY }}
 
       - name: Устанавливаем output переменную
         id: set_var
