@@ -6,7 +6,7 @@ jobs:
   first-job:
     runs-on: ubuntu-latest
     outputs:
-      my_value: ${{ steps.set_var.outputs.result }}  # Указываем job output
+      iam_token: ${{ steps.issue-iam-token.outputs.iam-token }}  # Указываем job output
     steps:
       - name: Получаем IAM Token
         id: issue-iam-token
@@ -16,10 +16,6 @@ jobs:
           yc-service-account-id: ${{ secrets.YC_SERVICE_ACCOUNT_ID }}
           yc-private-key: ${{ secrets.YC_PRIVATE_KEY }}
 
-      - name: Устанавливаем output переменную
-        id: set_var
-        run: echo "result=${{ steps.issue-iam-token.outputs.iam-token }}" >> $GITHUB_OUTPUT
-
       - name: Debug IAM Token
         run: echo "${{ steps.issue-iam-token.outputs.iam-token }}"
 
@@ -28,4 +24,4 @@ jobs:
     needs: first-job
     steps:
       - name: TEST
-        run: echo "${{ needs.first-job.outputs.my_value }}"
+        run: echo "${{ needs.first-job.outputs.iam_token }}"
