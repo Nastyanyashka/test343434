@@ -1,7 +1,25 @@
-- name: IAM Token
-  id: issue-iam-token
-  uses: yc-actions/yc-iam-token@v1
-  with:
-    yc-key-id: ${{ secrets.YC_KEY_ID }}
-    yc-service-account-id: ${{ secrets.YC_SERVICE_ACCOUNT_ID }}
-    yc-private-key: ${{ secrets.YC_PRIVATE_KEY }}
+name: CI
+on: [push]
+
+jobs:
+  first-job:
+    runs-on: ubuntu-latest
+    outputs:
+      my_value: ${{ steps.set_var.outputs.result }}  # Передаем output в job
+    steps:
+      - name: IAM Token
+        id: issue-iam-token
+        uses: yc-actions/yc-iam-token@v1
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+
+      - name: Устанавливаем output переменную
+        id: set_var
+        run: echo "result=${{ steps.issue-iam-token.outputs.iam-token }}" >> $GITHUB_ENV
+
+  second-job:
+    runs-on: ubuntu-latest
+    needs: first-job  # Исправлено (раньше было `check-tests`, которого нет)
+    steps:
+      - name: TEST
+        run: echo "${{ needs.first-job.outputs.my_value }}"
