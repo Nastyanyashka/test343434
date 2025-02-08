@@ -6,7 +6,7 @@ jobs:
   first-job:
     runs-on: ubuntu-latest
     outputs:
-      iam_token: ${{ steps.issue-iam-token.outputs.iam-token }}  # Указываем job output
+      token: ${{ steps.issue-iam-token.outputs.token }}  # Указываем job output
     steps:
       - name: Получаем IAM Token
         id: issue-iam-token
@@ -17,11 +17,11 @@ jobs:
           yc-private-key: ${{ secrets.YC_PRIVATE_KEY }}
 
       - name: Debug IAM Token
-        run: echo "${{ steps.issue-iam-token.outputs.iam-token }}"
+        run: echo "${{ steps.issue-iam-token.outputs.token }}"
 
   second-job:
     runs-on: ubuntu-latest
     needs: first-job
     steps:
       - name: TEST
-        run: echo "${{ needs.first-job.outputs.iam_token }}"
+        run: echo "${{ needs.first-job.outputs.token }}"
