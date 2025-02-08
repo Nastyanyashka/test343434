@@ -22,4 +22,4 @@ jobs:
     needs: first-job
     steps:
       - name: TEST
-        run: echo "${{ needs.first-job.outputs.token }}"
+        run: echo "${{ needs.first-job.steps.issue-iam-token.outputs.token }}"
