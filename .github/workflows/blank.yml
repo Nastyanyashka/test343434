@@ -1,3 +1,4 @@
+
 name: CI
 on: [push]
 
@@ -5,9 +6,9 @@ jobs:
   first-job:
     runs-on: ubuntu-latest
     outputs:
-      my_value: ${{ steps.set_var.outputs.result }}  # Передаем output в job
+      my_value: ${{ steps.set_var.outputs.result }}  # Указываем job output
     steps:
-      - name: IAM Token
+      - name: Получаем IAM Token
         id: issue-iam-token
         uses: yc-actions/yc-iam-token@v1
         with:
@@ -17,11 +18,14 @@ jobs:
 
       - name: Устанавливаем output переменную
         id: set_var
-        run: echo "result=${{ steps.issue-iam-token.outputs.iam-token }}" >> $GITHUB_ENV
+        run: echo "result=${{ steps.issue-iam-token.outputs.iam-token }}" >> $GITHUB_OUTPUT
+
+      - name: Debug IAM Token
+        run: echo "${{ steps.issue-iam-token.outputs.iam-token }}"
 
   second-job:
     runs-on: ubuntu-latest
-    needs: first-job  # Исправлено (раньше было `check-tests`, которого нет)
+    needs: first-job
     steps:
       - name: TEST
         run: echo "${{ needs.first-job.outputs.my_value }}"
